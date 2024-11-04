@@ -1,4 +1,0 @@
-{
-  "vitest.enable": true,
-  "vitest.include": ["test/**/*.test.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"]
-}
