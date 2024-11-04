@@ -1,29 +1,10 @@
-/*
- * Copyright 2014 Takuya Asano
- * Copyright 2010-2014 Atilika Inc. and contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-"use strict";
-
-import ViterbiNode from "./ViterbiNode.js";
-import ViterbiLattice from "./ViterbiLattice.js";
-import SurrogateAwareString from "../util/SurrogateAwareString.js";
-import DynamicDictionaries from "../dict/DynamicDictionaries.js";
-import DoubleArray from "doublearray.ts/dist/doubleArrayClass.js";
-import TokenInfoDictionary from "../dict/TokenInfoDictionary.js";
-import UnknownDictionary from "../dict/UnknownDictionary.js";
+import ViterbiNode from "./ViterbiNode";
+import ViterbiLattice from "./ViterbiLattice";
+import SurrogateAwareString from "../util/SurrogateAwareString";
+import DynamicDictionaries from "../dict/DynamicDictionaries";
+import DoubleArray from "doublearray.ts/dist/doubleArrayClass";
+import TokenInfoDictionary from "../dict/TokenInfoDictionary";
+import UnknownDictionary from "../dict/UnknownDictionary";
 
 class ViterbiBuilder {
   trie: DoubleArray;

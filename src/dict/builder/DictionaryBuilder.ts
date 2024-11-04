@@ -1,28 +1,9 @@
-/*
- * Copyright 2014 Takuya Asano
- * Copyright 2010-2014 Atilika Inc. and contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-"use strict";
-
 import doublearray from "doublearray.ts";
-import DynamicDictionaries from "../DynamicDictionaries.js";
-import TokenInfoDictionary from "../TokenInfoDictionary.js";
-import ConnectionCostsBuilder from "./ConnectionCostsBuilder.js";
-import CharacterDefinitionBuilder from "./CharacterDefinitionBuilder.js";
-import UnknownDictionary from "../UnknownDictionary.js";
+import DynamicDictionaries from "../DynamicDictionaries";
+import TokenInfoDictionary from "../TokenInfoDictionary";
+import ConnectionCostsBuilder from "./ConnectionCostsBuilder";
+import CharacterDefinitionBuilder from "./CharacterDefinitionBuilder";
+import UnknownDictionary from "../UnknownDictionary";
 import type { Key } from "doublearray.ts/dist/types";
 
 class DictionaryBuilder {

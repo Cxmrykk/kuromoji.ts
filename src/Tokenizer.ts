@@ -1,26 +1,10 @@
-/*
- * Copyright 2014 Takuya Asano
- * Copyright 2010-2014 Atilika Inc. and contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
-import ViterbiBuilder from "./viterbi/ViterbiBuilder.js";
-import ViterbiSearcher from "./viterbi/ViterbiSearcher.js";
-import IpadicFormatter from "./util/IpadicFormatter.js";
-import { IpadicFormatterToken } from "./util/IpadicFormatter.js";
-import DynamicDictionaries from "./dict/DynamicDictionaries.js";
-import ViterbiLattice from "./viterbi/ViterbiLattice.js";
+import ViterbiBuilder from "./viterbi/ViterbiBuilder";
+import ViterbiSearcher from "./viterbi/ViterbiSearcher";
+import IpadicFormatter from "./util/IpadicFormatter";
+import type { IpadicFormatterToken } from "./util/IpadicFormatter";
+import DynamicDictionaries from "./dict/DynamicDictionaries";
+import ViterbiLattice from "./viterbi/ViterbiLattice";
 
 /**
  * 読点と句読点。
