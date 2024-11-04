@@ -1,5 +1,6 @@
 {
   "name": "@cxmrykk/kuromoji.ts",
+  "version": "0.0.1",
   "module": "src/kuromoji.ts",
   "type": "module",
   "devDependencies": {
