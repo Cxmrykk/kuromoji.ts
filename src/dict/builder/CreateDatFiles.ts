@@ -4,6 +4,8 @@ import kuromoji from "../../kuromoji";
 import DictionaryBuilder from "./DictionaryBuilder";
 import { pathJoin } from "../../util/PathJoin";
 
+import type { ArrayBuffer } from "doublearray.ts/dist/types";
+
 const outDir = "dict-uncompressed/";
 
 const createDatFiles = async () => {
