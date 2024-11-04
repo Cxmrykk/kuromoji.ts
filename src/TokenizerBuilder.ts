@@ -1,5 +1,6 @@
 import Tokenizer from "./Tokenizer";
 import BrowserDictionaryLoader from "./loader/BrowserDictionaryLoader";
+import ExpoDictionaryLoader from "./loader/ExpoDictionaryLoader";
 import NodeDictionaryLoader from "./loader/NodeDictionaryLoader";
 
 export interface TokenizerBuilderOption {
@@ -47,6 +48,13 @@ class TokenizerBuilder {
 
   async buildBrowser(callback: TokenizerBuilderOnLoad) {
     const loader = new BrowserDictionaryLoader(this.dic_path);
+    await loader.load((err, dic) => {
+      callback(toErrorArray(err), new Tokenizer(dic));
+    });
+  }
+
+  async buildExpo(callback: TokenizerBuilderOnLoad) {
+    const loader = new ExpoDictionaryLoader(this.dic_path);
     await loader.load((err, dic) => {
       callback(toErrorArray(err), new Tokenizer(dic));
     });
