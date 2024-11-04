@@ -9,7 +9,7 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@cxmrykk/mecab-ipadic-seed.ts": "^0.0.2",
+    "@cxmrykk/mecab-ipadic-seed.ts": "^0.0.3",
     "doublearray.ts": "^0.1.3"
   }
 }
