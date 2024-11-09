@@ -1,7 +1,7 @@
 {
   "name": "@cxmrykk/kuromoji",
   "version": "0.0.1",
-  "module": "src/kuromoji.ts",
+  "module": "index.ts",
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
