@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import IPADic from "mecab-ipadic-seed";
+import IPADic from "@cxmrykk/mecab-ipadic-seed.ts"
 import kuromoji from "../../kuromoji";
 import DictionaryBuilder from "./DictionaryBuilder";
 import { pathJoin } from "../../util/PathJoin";
