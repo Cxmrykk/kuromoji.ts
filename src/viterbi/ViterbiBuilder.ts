@@ -2,7 +2,7 @@ import ViterbiNode from "./ViterbiNode";
 import ViterbiLattice from "./ViterbiLattice";
 import SurrogateAwareString from "../util/SurrogateAwareString";
 import DynamicDictionaries from "../dict/DynamicDictionaries";
-import DoubleArray from "doublearray.ts/dist/doubleArrayClass";
+import DoubleArray from "../util/doublearray/doubleArrayClass";
 import TokenInfoDictionary from "../dict/TokenInfoDictionary";
 import UnknownDictionary from "../dict/UnknownDictionary";
 

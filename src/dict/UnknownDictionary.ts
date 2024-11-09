@@ -45,9 +45,9 @@ class UnknownDictionary extends TokenInfoDictionary {
     compat_cat_map_buffer: Uint32Array,
     invoke_def_buffer: Uint8Array
   ) {
-    this.loadDictionary(unk_buffer);
-    this.loadPosVector(unk_pos_buffer);
-    this.loadTargetMap(unk_map_buffer);
+    this.loadDictionary(unk_buffer.buffer);
+    this.loadPosVector(unk_pos_buffer.buffer);
+    this.loadTargetMap(unk_map_buffer.buffer);
     this.character_definition = CharacterDefinition.load(
       cat_map_buffer,
       compat_cat_map_buffer,

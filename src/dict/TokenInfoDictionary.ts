@@ -100,21 +100,19 @@ class TokenInfoDictionary {
     return buffer.shrink(); // Shrink-ed Typed Array
   }
 
-  // from tid.dat
-  loadDictionary(array_buffer: Uint8Array) {
-    this.dictionary = new ByteBuffer(array_buffer);
+  loadDictionary(data: ArrayBufferLike) {
+    this.dictionary = new ByteBuffer(new Uint8Array(data).buffer);
     return this;
   }
 
-  // from tid_pos.dat
-  loadPosVector(array_buffer: Uint8Array) {
-    this.pos_buffer = new ByteBuffer(array_buffer);
+  loadPosVector(data: ArrayBufferLike) {
+    this.pos_buffer = new ByteBuffer(new Uint8Array(data).buffer);
     return this;
   }
 
-  // from tid_map.dat
-  loadTargetMap(array_buffer: Uint8Array) {
-    const buffer = new ByteBuffer(array_buffer);
+  loadTargetMap(data: ArrayBufferLike) {
+    const buffer = new ByteBuffer(new Uint8Array(data).buffer);
+    // ...
     buffer.position = 0;
     this.target_map = {};
     buffer.readInt(); // map_keys_size

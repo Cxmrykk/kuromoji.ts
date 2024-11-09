@@ -1,10 +1,10 @@
-import doublearray from "doublearray.ts";
+import doublearray from "../../util/doublearray";
 import DynamicDictionaries from "../DynamicDictionaries";
 import TokenInfoDictionary from "../TokenInfoDictionary";
 import ConnectionCostsBuilder from "./ConnectionCostsBuilder";
 import CharacterDefinitionBuilder from "./CharacterDefinitionBuilder";
 import UnknownDictionary from "../UnknownDictionary";
-import type { Key } from "doublearray.ts/dist/types";
+import type { Key } from "../../util/doublearray/types";
 
 class DictionaryBuilder {
   tid_entries: string[][];

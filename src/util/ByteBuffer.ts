@@ -120,24 +120,19 @@ class ByteBuffer {
    * @param {(number|Uint8Array)} arg Initial size of this buffer (number), or buffer to set (Uint8Array)
    * @constructor
    */
-  constructor(arg?: number | Uint8Array) {
+  constructor(arg?: number | ArrayBufferLike | Uint8Array) { // Accept ArrayBufferLike
     let initial_size;
     if (arg == null) {
       initial_size = 1024 * 1024;
+      this.buffer = new Uint8Array(initial_size);
     } else if (typeof arg === "number") {
       initial_size = arg;
+      this.buffer = new Uint8Array(initial_size);
     } else if (arg instanceof Uint8Array) {
       this.buffer = arg;
-      this.position = 0; // Overwrite
-      return;
-    } else {
-      // typeof arg -> String
-      throw (
-        typeof arg + " is invalid parameter type for ByteBuffer constructor"
-      );
+    } else { // ArrayBufferLike (or other)
+      this.buffer = new Uint8Array(arg); // Create Uint8Array from ArrayBufferLike
     }
-    // arg is null or number
-    this.buffer = new Uint8Array(initial_size);
     this.position = 0;
   }
 

@@ -1,10 +1,10 @@
-
 import TokenInfoDictionary from "./TokenInfoDictionary";
 import ConnectionCosts from "./ConnectionCosts";
 import UnknownDictionary from "./UnknownDictionary";
-import doublearray from "doublearray.ts";
-import type DoubleArray from "doublearray.ts/dist/doubleArrayClass";
-import type { ArrayBuffer } from "doublearray.ts/dist/types";
+import doublearray from "../util/doublearray";
+import type DoubleArray from "../util/doublearray/doubleArrayClass";
+import InvokeDefinitionMap from "./InvokeDefinitionMap";
+import pako from "pako";
 
 class DynamicDictionaries {
   trie: DoubleArray;
@@ -50,15 +50,15 @@ class DynamicDictionaries {
   }
 
   // from base.dat & check.dat
-  loadTrie(base_buffer: ArrayBuffer, check_buffer: ArrayBuffer) {
+  loadTrie(base_buffer: Int32Array, check_buffer: Int32Array) {
     this.trie = doublearray.load(base_buffer, check_buffer);
     return this;
   }
 
   loadTokenInfoDictionaries(
-    token_info_buffer: Uint8Array,
-    pos_buffer: Uint8Array,
-    target_map_buffer: Uint8Array
+    token_info_buffer: ArrayBufferLike,
+    pos_buffer: ArrayBufferLike,
+    target_map_buffer: ArrayBufferLike
   ) {
     this.token_info_dictionary.loadDictionary(token_info_buffer);
     this.token_info_dictionary.loadPosVector(pos_buffer);
@@ -87,6 +87,30 @@ class DynamicDictionaries {
       compat_cat_map_buffer,
       invoke_def_buffer
     );
+    return this;
+  }
+
+  load(jsonData: any) {
+    this.trie = doublearray.load(
+      new Int32Array(pako.inflate(Uint8Array.from(jsonData.base)).buffer), // Use Int32Array after inflating
+      new Int32Array(pako.inflate(Uint8Array.from(jsonData.check)).buffer) // Use Int32Array after inflating
+    );
+
+    this.token_info_dictionary.loadDictionary(pako.inflate(Uint8Array.from(jsonData.tid)).buffer);
+    this.token_info_dictionary.loadPosVector(pako.inflate(Uint8Array.from(jsonData.tid_pos)).buffer);
+    this.token_info_dictionary.loadTargetMap(pako.inflate(Uint8Array.from(jsonData.tid_map)).buffer);
+    this.connection_costs.loadConnectionCosts(new Int16Array(pako.inflate(Uint8Array.from(jsonData.cc)).buffer)); // Use Int16Array after inflating
+    this.unknown_dictionary.loadDictionary(pako.inflate(Uint8Array.from(jsonData.unk)).buffer);
+    this.unknown_dictionary.loadPosVector(pako.inflate(Uint8Array.from(jsonData.unk_pos)).buffer);
+    this.unknown_dictionary.loadTargetMap(pako.inflate(Uint8Array.from(jsonData.unk_map)).buffer);
+
+    const char_def = this.unknown_dictionary.character_definition;
+    if (char_def) {
+      char_def.character_category_map = pako.inflate(Uint8Array.from(jsonData.unk_char));
+      char_def.compatible_category_map = new Uint32Array(pako.inflate(Uint8Array.from(jsonData.unk_compat)).buffer); // Use Uint32Array after inflating
+      char_def.invoke_definition_map = InvokeDefinitionMap.load(pako.inflate(Uint8Array.from(jsonData.unk_invoke)));
+    }
+
     return this;
   }
 }
