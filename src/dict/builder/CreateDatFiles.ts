@@ -1,10 +1,11 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import IPADic from "@cxmrykk/mecab-ipadic-seed.ts"
+import IPADic from "@cxmrykk/mecab-ipadic-seed.ts";
 import kuromoji from "../../..";
 import DictionaryBuilder from "./DictionaryBuilder";
 import { pathJoin } from "../../util/PathJoin";
+import * as pako from "pako";
 
-const outDir = "dict-uncompressed/";
+const outDir = "dict-output/";
 
 const createDatFiles = async () => {
   if (!existsSync(outDir)) {
@@ -52,6 +53,7 @@ const createDatFiles = async () => {
   );
 };
 
+
 const buildBinaryDictionaries = async (
   promises: Promise<void>[],
   builder: DictionaryBuilder
@@ -61,18 +63,19 @@ const buildBinaryDictionaries = async (
   console.log("Building binary dictionary ...");
   const dic = builder.build();
 
-  const base_buffer = dic.trie.bc.getBaseBuffer();
-  const check_buffer = dic.trie.bc.getCheckBuffer();
-  const token_info_buffer = dic.token_info_dictionary.dictionary.buffer;
-  const tid_pos_buffer = dic.token_info_dictionary.pos_buffer.buffer;
-  const tid_map_buffer = dic.token_info_dictionary.targetMapToBuffer();
-  const connection_costs_buffer = dic.connection_costs.buffer;
-  const unk_buffer = dic.unknown_dictionary.dictionary.buffer;
-  const unk_pos_buffer = dic.unknown_dictionary.pos_buffer.buffer;
-  const unk_map_buffer = dic.unknown_dictionary.targetMapToBuffer();
-  const char_map_buffer = dic.unknown_dictionary.character_definition?.character_category_map;
-  const char_compat_map_buffer = dic.unknown_dictionary.character_definition?.compatible_category_map;
-  const invoke_definition_map_buffer = dic.unknown_dictionary.character_definition?.invoke_definition_map?.toBuffer();
+  // Compress buffers using pako.deflate
+  const base_buffer = pako.deflate(new Uint8Array(dic.trie.bc.getBaseBuffer()));
+  const check_buffer = pako.deflate(new Uint8Array(dic.trie.bc.getCheckBuffer()));
+  const token_info_buffer = pako.deflate(dic.token_info_dictionary.dictionary.buffer);
+  const tid_pos_buffer = pako.deflate(dic.token_info_dictionary.pos_buffer.buffer);
+  const tid_map_buffer = pako.deflate(dic.token_info_dictionary.targetMapToBuffer());
+  const connection_costs_buffer = pako.deflate(new Uint8Array(dic.connection_costs.buffer));
+  const unk_buffer = pako.deflate(dic.unknown_dictionary.dictionary.buffer);
+  const unk_pos_buffer = pako.deflate(dic.unknown_dictionary.pos_buffer.buffer);
+  const unk_map_buffer = pako.deflate(dic.unknown_dictionary.targetMapToBuffer());
+  const char_map_buffer = dic.unknown_dictionary.character_definition?.character_category_map ? pako.deflate(dic.unknown_dictionary.character_definition.character_category_map) : new Uint8Array(0);
+  const char_compat_map_buffer = dic.unknown_dictionary.character_definition?.compatible_category_map ? pako.deflate(new Uint8Array(dic.unknown_dictionary.character_definition.compatible_category_map.buffer)) : new Uint8Array(0);
+  const invoke_definition_map_buffer = dic.unknown_dictionary.character_definition?.invoke_definition_map?.toBuffer() ? pako.deflate(dic.unknown_dictionary.character_definition.invoke_definition_map.toBuffer()) : new Uint8Array(0);
 
   writeFileSync(pathJoin([outDir, "base.dat"]), base_buffer);
   writeFileSync(pathJoin([outDir, "check.dat"]), check_buffer);
@@ -83,9 +86,9 @@ const buildBinaryDictionaries = async (
   writeFileSync(pathJoin([outDir, "unk.dat"]), unk_buffer);
   writeFileSync(pathJoin([outDir, "unk_pos.dat"]), unk_pos_buffer);
   writeFileSync(pathJoin([outDir, "unk_map.dat"]), unk_map_buffer);
-  writeFileSync(pathJoin([outDir, "unk_char.dat"]), char_map_buffer ?? new Uint8Array(0));
-  writeFileSync(pathJoin([outDir, "unk_compat.dat"]), char_compat_map_buffer ?? new Uint32Array(0));
-  writeFileSync(pathJoin([outDir, "unk_invoke.dat"]), invoke_definition_map_buffer ?? new Uint8Array(0));
+  writeFileSync(pathJoin([outDir, "unk_char.dat"]), char_map_buffer);
+  writeFileSync(pathJoin([outDir, "unk_compat.dat"]), char_compat_map_buffer);
+  writeFileSync(pathJoin([outDir, "unk_invoke.dat"]), invoke_definition_map_buffer);
 };
 
 await createDatFiles();
