@@ -64,18 +64,18 @@ const buildBinaryDictionaries = async (
   const dic = builder.build();
 
   // Compress buffers using pako.deflate
-  const base_buffer = pako.deflate(new Uint8Array(dic.trie.bc.getBaseBuffer()));
-  const check_buffer = pako.deflate(new Uint8Array(dic.trie.bc.getCheckBuffer()));
+  const base_buffer = pako.deflate(new Uint8Array(dic.trie.bc.getBaseBuffer().buffer)); // Convert to Uint8Array before deflating
+  const check_buffer = pako.deflate(new Uint8Array(dic.trie.bc.getCheckBuffer().buffer)); // Convert to Uint8Array before deflating
   const token_info_buffer = pako.deflate(dic.token_info_dictionary.dictionary.buffer);
   const tid_pos_buffer = pako.deflate(dic.token_info_dictionary.pos_buffer.buffer);
   const tid_map_buffer = pako.deflate(dic.token_info_dictionary.targetMapToBuffer());
-  const connection_costs_buffer = pako.deflate(new Uint8Array(dic.connection_costs.buffer));
+  const connection_costs_buffer = pako.deflate(new Uint8Array(dic.connection_costs.buffer.buffer));
   const unk_buffer = pako.deflate(dic.unknown_dictionary.dictionary.buffer);
   const unk_pos_buffer = pako.deflate(dic.unknown_dictionary.pos_buffer.buffer);
   const unk_map_buffer = pako.deflate(dic.unknown_dictionary.targetMapToBuffer());
-  const char_map_buffer = dic.unknown_dictionary.character_definition?.character_category_map ? pako.deflate(dic.unknown_dictionary.character_definition.character_category_map) : new Uint8Array(0);
-  const char_compat_map_buffer = dic.unknown_dictionary.character_definition?.compatible_category_map ? pako.deflate(new Uint8Array(dic.unknown_dictionary.character_definition.compatible_category_map.buffer)) : new Uint8Array(0);
-  const invoke_definition_map_buffer = dic.unknown_dictionary.character_definition?.invoke_definition_map?.toBuffer() ? pako.deflate(dic.unknown_dictionary.character_definition.invoke_definition_map.toBuffer()) : new Uint8Array(0);
+  const char_map_buffer = pako.deflate(dic.unknown_dictionary.character_definition?.character_category_map || new Uint8Array(0));
+  const char_compat_map_buffer = pako.deflate(new Uint8Array(dic.unknown_dictionary.character_definition?.compatible_category_map?.buffer || new ArrayBuffer(0))); // Convert to Uint8Array before deflating
+  const invoke_definition_map_buffer = pako.deflate(dic.unknown_dictionary.character_definition?.invoke_definition_map?.toBuffer() || new Uint8Array(0));
 
   writeFileSync(pathJoin([outDir, "base.dat"]), base_buffer);
   writeFileSync(pathJoin([outDir, "check.dat"]), check_buffer);
