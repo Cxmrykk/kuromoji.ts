@@ -1,12 +1,15 @@
-import type { TokenizerBuilderOption } from "./src/TokenizerBuilder";
-
-import TokenizerBuilder from "./src/TokenizerBuilder";
+import Tokenizer from "./src/Tokenizer";
+import DynamicDictionaries from "./src/dict/DynamicDictionaries";
 import DictionaryBuilder from "./src/dict/builder/DictionaryBuilder";
 
 // Public methods
 const kuromoji = {
-  builder: (option: TokenizerBuilderOption = {}) => {
-    return new TokenizerBuilder(option);
+  tokenizer: (json: any) => {
+    // Load the dictionary contents from JSON file
+    const dic = new DynamicDictionaries();
+
+    // Return the tokenizer instance
+    return new Tokenizer(dic.load(json));
   },
   dictionaryBuilder: () => {
     return new DictionaryBuilder();

@@ -1,5 +1,4 @@
 import DynamicDictionaries from "../dict/DynamicDictionaries";
-import kuromojiJson from "../../dict/kuromoji.json";
 
 export type DictionaryLoaderOnLoad = (
   err: Error | null, // Corrected type
@@ -14,12 +13,11 @@ class DictionaryLoader {
     this.dic = new DynamicDictionaries();
   }
 
-  async load(load_callback: DictionaryLoaderOnLoad) {
+  load(json: any) {
     try {
-      this.dic.load(kuromojiJson);
-      load_callback(null, this.dic);
-    } catch (err: unknown) { // Type guard
-      load_callback(err instanceof Error ? err : new Error("Failed to load dictionary"), this.dic);
+    return this.dic.load(json);
+    } catch (error) {
+      throw new Error("Failed to load dictionary: " + error);
     }
   }
 }
