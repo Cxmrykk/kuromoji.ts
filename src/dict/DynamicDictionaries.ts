@@ -60,9 +60,9 @@ class DynamicDictionaries {
     pos_buffer: ArrayBufferLike,
     target_map_buffer: ArrayBufferLike
   ) {
-    this.token_info_dictionary.loadDictionary(token_info_buffer);
-    this.token_info_dictionary.loadPosVector(pos_buffer);
-    this.token_info_dictionary.loadTargetMap(target_map_buffer);
+    this.token_info_dictionary.loadDictionary(new Uint8Array(token_info_buffer));
+    this.token_info_dictionary.loadPosVector(new Uint8Array(pos_buffer));
+    this.token_info_dictionary.loadTargetMap(new Uint8Array(target_map_buffer));
     return this;
   }
 
@@ -92,23 +92,23 @@ class DynamicDictionaries {
 
   load(jsonData: any) {
     this.trie = doublearray.load(
-      new Int32Array(pako.inflate(Uint8Array.from(jsonData.base)).buffer), // Use Int32Array after inflating
-      new Int32Array(pako.inflate(Uint8Array.from(jsonData.check)).buffer) // Use Int32Array after inflating
+      pako.inflate(jsonData.base),
+      pako.inflate(jsonData.check)
     );
 
-    this.token_info_dictionary.loadDictionary(pako.inflate(Uint8Array.from(jsonData.tid)).buffer);
-    this.token_info_dictionary.loadPosVector(pako.inflate(Uint8Array.from(jsonData.tid_pos)).buffer);
-    this.token_info_dictionary.loadTargetMap(pako.inflate(Uint8Array.from(jsonData.tid_map)).buffer);
-    this.connection_costs.loadConnectionCosts(new Int16Array(pako.inflate(Uint8Array.from(jsonData.cc)).buffer)); // Use Int16Array after inflating
-    this.unknown_dictionary.loadDictionary(pako.inflate(Uint8Array.from(jsonData.unk)).buffer);
-    this.unknown_dictionary.loadPosVector(pako.inflate(Uint8Array.from(jsonData.unk_pos)).buffer);
-    this.unknown_dictionary.loadTargetMap(pako.inflate(Uint8Array.from(jsonData.unk_map)).buffer);
+    this.token_info_dictionary.loadDictionary(pako.inflate(jsonData.tid));
+    this.token_info_dictionary.loadPosVector(pako.inflate(jsonData.tid_pos));
+    this.token_info_dictionary.loadTargetMap(pako.inflate(jsonData.tid_map));
+    this.connection_costs.loadConnectionCosts(new Int16Array(pako.inflate(jsonData.cc)));
+    this.unknown_dictionary.loadDictionary(pako.inflate(jsonData.unk));
+    this.unknown_dictionary.loadPosVector(pako.inflate(jsonData.unk_pos));
+    this.unknown_dictionary.loadTargetMap(pako.inflate(jsonData.unk_map));
 
     const char_def = this.unknown_dictionary.character_definition;
     if (char_def) {
-      char_def.character_category_map = pako.inflate(Uint8Array.from(jsonData.unk_char));
-      char_def.compatible_category_map = new Uint32Array(pako.inflate(Uint8Array.from(jsonData.unk_compat)).buffer); // Use Uint32Array after inflating
-      char_def.invoke_definition_map = InvokeDefinitionMap.load(pako.inflate(Uint8Array.from(jsonData.unk_invoke)));
+      char_def.character_category_map = pako.inflate(jsonData.unk_char);
+      char_def.compatible_category_map = new Uint32Array(pako.inflate(jsonData.unk_compat));
+      char_def.invoke_definition_map = InvokeDefinitionMap.load(pako.inflate(jsonData.unk_invoke));
     }
 
     return this;

@@ -2,7 +2,7 @@ import ByteBuffer from "../util/ByteBuffer";
 
 class TokenInfoDictionary {
   dictionary: ByteBuffer;
-  target_map: { [key: string]: number[] };
+  target_map: Map<number, number[]>;
   pos_buffer: ByteBuffer;
 
   /**
@@ -11,7 +11,7 @@ class TokenInfoDictionary {
    */
   constructor() {
     this.dictionary = new ByteBuffer(10 * 1024 * 1024);
-    this.target_map = {}; // trie_id (of surface form) -> token_info_id (of token)
+    this.target_map = new Map<number, number[]>(); // trie_id (of surface form) -> token_info_id (of token)
     this.pos_buffer = new ByteBuffer(10 * 1024 * 1024);
   }
 
@@ -75,23 +75,22 @@ class TokenInfoDictionary {
   }
 
   addMapping(source: number, target: number) {
-    const mapping = this.target_map[source] ?? [];
+    const mapping = this.target_map.get(source) ?? [];
     // if (mapping == null) {
     //   mapping = [];
     // }
     mapping.push(target);
 
-    this.target_map[source] = mapping;
+    this.target_map.set(source, mapping);
   }
 
   targetMapToBuffer() {
     var buffer = new ByteBuffer();
     var map_keys_size = Object.keys(this.target_map).length;
     buffer.putInt(map_keys_size);
-    for (var key in this.target_map) {
-      var values = this.target_map[key]; // Array
+    for (var [key, values] of this.target_map.entries()) {
       var map_values_size = values.length;
-      buffer.putInt(parseInt(key));
+      buffer.putInt(key);
       buffer.putInt(map_values_size);
       for (var i = 0; i < values.length; i++) {
         buffer.putInt(values[i]);
@@ -100,21 +99,21 @@ class TokenInfoDictionary {
     return buffer.shrink(); // Shrink-ed Typed Array
   }
 
-  loadDictionary(data: ArrayBufferLike) {
-    this.dictionary = new ByteBuffer(new Uint8Array(data).buffer);
+  loadDictionary(data: Uint8Array) {
+    this.dictionary = new ByteBuffer(data.buffer);
     return this;
   }
 
-  loadPosVector(data: ArrayBufferLike) {
-    this.pos_buffer = new ByteBuffer(new Uint8Array(data).buffer);
+  loadPosVector(data: Uint8Array) {
+    this.pos_buffer = new ByteBuffer(data.buffer);
     return this;
   }
 
-  loadTargetMap(data: ArrayBufferLike) {
-    const buffer = new ByteBuffer(new Uint8Array(data).buffer);
+  loadTargetMap(data: Uint8Array) {
+    const buffer = new ByteBuffer(data.buffer);
     // ...
     buffer.position = 0;
-    this.target_map = {};
+    this.target_map = new Map<number, number[]>();
     buffer.readInt(); // map_keys_size
     while (buffer.buffer.length > buffer.position) {
       // if (buffer.buffer.length < buffer.position + 1) {
